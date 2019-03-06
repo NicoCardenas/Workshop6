@@ -5,6 +5,7 @@
  */
 package edu.eci.arsw.cinema.controllers;
 
+import edu.eci.arsw.cinema.model.CinemaFunction;
 import edu.eci.arsw.cinema.persistence.CinemaException;
 import edu.eci.arsw.cinema.services.CinemaServices;
 import java.util.logging.Level;
@@ -37,7 +38,7 @@ public class CinemaAPIController {
             return new ResponseEntity<>(cs.getAllCinemas(),HttpStatus.ACCEPTED);
         } catch (Exception ex) {
             Logger.getLogger(CinemaAPIController.class.getName()).log(Level.SEVERE, null, ex);
-            return new ResponseEntity<>("Error in the json generation",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(ex.getMessage(),HttpStatus.NOT_FOUND);
         }
     }
     
@@ -48,10 +49,29 @@ public class CinemaAPIController {
         try {            
             return new ResponseEntity<>(cs.getCinemaByName(name), HttpStatus.ACCEPTED);
         } catch (CinemaException e) {
-            Logger.getLogger(CinemaAPIController.class.getName()).log(Level.SEVERE, null, e);
-            //throw new ResourceNotFoundException(e.getMessage());
+            Logger.getLogger(CinemaAPIController.class.getName()).log(Level.SEVERE, null, e);            
             return new ResponseEntity<>(new ResourceNotFoundException(e.getMessage()).getMessage(), HttpStatus.NOT_FOUND);
         }        
     }
     
+    @GetMapping("/{name}/{date}")
+    public ResponseEntity<?> getDate(@PathVariable String name, @PathVariable String date){
+        if (!cs.getFunctionsbyCinemaAndDate(name, date).isEmpty())
+            return new ResponseEntity<>(cs.getFunctionsbyCinemaAndDate(name, date), HttpStatus.ACCEPTED);
+        else
+            return new ResponseEntity<>(new ResourceNotFoundException("There are not funcions with this date " + date).getMessage(), HttpStatus.NOT_FOUND);
+    }
+    
+    @GetMapping("/{name}/{date}/{moviename}")
+    public ResponseEntity<?> getMoviename(@PathVariable String name, @PathVariable String date, @PathVariable String moviename){
+        if (!cs.getFunctionsbyCinemaAndDate(name, date).isEmpty()){
+            for (CinemaFunction function : cs.getFunctionsbyCinemaAndDate(name, date)) {
+                if (function.getMovie().getName().equals(moviename))
+                    return new ResponseEntity<>(function, HttpStatus.ACCEPTED);
+            }
+            return new ResponseEntity<>(new ResourceNotFoundException("There are not funcions with this name " + moviename).getMessage(), HttpStatus.NOT_FOUND);
+        }            
+        else
+            return new ResponseEntity<>(new ResourceNotFoundException("There are not funcions with this name " + moviename).getMessage(), HttpStatus.NOT_FOUND);        
+    }
 }
