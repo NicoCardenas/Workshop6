@@ -80,15 +80,26 @@ public class CinemaAPIController {
     }
     
     @RequestMapping(path = "/{name}", method = RequestMethod.POST, consumes = "application/json")    
-    public ResponseEntity<?> putCinemaFuncion(@PathVariable String name, @RequestBody CinemaFunction function){
+    public ResponseEntity<?> postCinemaFuncion(@PathVariable String name, @RequestBody CinemaFunction function){
         try {
             //registrar dato
-            System.out.println(function);
             cs.addCinemaFunction(name, function);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (CinemaPersistenceException ex) {
             Logger.getLogger(CinemaAPIController.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>(new ResourceNotFoundException(ex.getMessage()).getMessage(),HttpStatus.FORBIDDEN);
         }         
+    }
+    
+    @RequestMapping(path = "/{name}")
+    public ResponseEntity<?> putCinemaFuncion(@PathVariable String name, @RequestBody CinemaFunction function){
+        try {
+            //registrar dato
+            cs.updateCinemaFunction(name, function);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (CinemaPersistenceException ex) {
+            Logger.getLogger(CinemaAPIController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>(new ResourceNotFoundException(ex.getMessage()).getMessage(),HttpStatus.FORBIDDEN);
+        }   
     }
 }

@@ -68,5 +68,18 @@ public class CinemaServices {
         Cinema cinema = cps.getCinema(name);
         cinema.getFunctions().add(function);
     }
+    
+    public void updateCinemaFunction(String name, CinemaFunction function) throws CinemaPersistenceException{
+        Cinema cinema = cps.getCinema(name);
+        List<CinemaFunction> functions = cinema.getFunctions();
+        for (int i = 0; i < 10; i++) {
+            if (functions.contains(function))
+                if (functions.get(i).equals(function))
+                    functions.set(i, function);
+            else
+                functions.add(function);
+        }
+        cinema.setSchedule(functions);
+    }
 
 }
