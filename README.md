@@ -10,7 +10,13 @@
 ![View of function ](/Images/date.png)
  - Movie name Json <br>
 ![View of function ](/Images/namemovie.png)
- - Execution curl
+ - Execution curl <br>
 ![View of function ](/Images/curl.png)
- - Responese of curl
+ - Responese of curl <br>
 ![View of function ](/Images/post.png)
+
+## Questions
+-   Qué condiciones de carrera se podrían presentar?
+    **Answer**: 
+-   Cuales son las respectivas regiones críticas?
+    **Answer**: 
