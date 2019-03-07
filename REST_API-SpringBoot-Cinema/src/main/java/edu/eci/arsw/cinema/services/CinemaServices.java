@@ -48,7 +48,7 @@ public class CinemaServices {
             return cps.getCinema(name);
         } catch (CinemaPersistenceException e) {
             throw new CinemaException(e.getMessage());
-        }        
+        }
     }
     
     
@@ -62,6 +62,11 @@ public class CinemaServices {
     
     public List<CinemaFunction> getFunctionsbyCinemaAndDate(String cinema, String date){        
         return cps.getFunctionsbyCinemaAndDate(cinema, date);
+    }
+    
+    public void addCinemaFunction(String name, CinemaFunction function) throws CinemaPersistenceException{
+        Cinema cinema = cps.getCinema(name);
+        cinema.getFunctions().add(function);
     }
 
 }

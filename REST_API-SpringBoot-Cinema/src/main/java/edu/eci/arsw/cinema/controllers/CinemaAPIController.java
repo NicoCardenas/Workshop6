@@ -5,8 +5,10 @@
  */
 package edu.eci.arsw.cinema.controllers;
 
+import edu.eci.arsw.cinema.model.Cinema;
 import edu.eci.arsw.cinema.model.CinemaFunction;
 import edu.eci.arsw.cinema.persistence.CinemaException;
+import edu.eci.arsw.cinema.persistence.CinemaPersistenceException;
 import edu.eci.arsw.cinema.services.CinemaServices;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,9 +17,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 /**
  *
@@ -42,14 +48,12 @@ public class CinemaAPIController {
         }
     }
     
-    /*@GetMapping(path = "/{name}",  produces = "application/json;charset=UTF-8")
-    @ResponseBody*/
-    @GetMapping("/{name}")
+    @GetMapping(path = "/{name}",  produces = "application/json; charset=UTF-8")
     public ResponseEntity<?> getCinema(@PathVariable String name) throws ResourceNotFoundException{
         try {            
             return new ResponseEntity<>(cs.getCinemaByName(name), HttpStatus.ACCEPTED);
         } catch (CinemaException e) {
-            Logger.getLogger(CinemaAPIController.class.getName()).log(Level.SEVERE, null, e);            
+            Logger.getLogger(CinemaAPIController.class.getName()).log(Level.SEVERE, null, e);
             return new ResponseEntity<>(new ResourceNotFoundException(e.getMessage()).getMessage(), HttpStatus.NOT_FOUND);
         }        
     }
@@ -73,5 +77,18 @@ public class CinemaAPIController {
         }            
         else
             return new ResponseEntity<>(new ResourceNotFoundException("There are not funcions with this name " + moviename).getMessage(), HttpStatus.NOT_FOUND);        
+    }
+    
+    @RequestMapping(path = "/{name}", method = RequestMethod.POST, consumes = "application/json")    
+    public ResponseEntity<?> putCinemaFuncion(@PathVariable String name, @RequestBody CinemaFunction function){
+        try {
+            //registrar dato
+            System.out.println(function);
+            cs.addCinemaFunction(name, function);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (CinemaPersistenceException ex) {
+            Logger.getLogger(CinemaAPIController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>(new ResourceNotFoundException(ex.getMessage()).getMessage(),HttpStatus.FORBIDDEN);
+        }         
     }
 }
